@@ -15,24 +15,30 @@ function App() {
   const [layout, setLayout] = useState("default");
   const [caret, setCaret] = useState(0);
   const [focusedInput, setFocusedInput] = useState<string>("name");
-  const inputRef = useRef<HTMLInputElement>(null);
+  const nameInputRef = useRef<HTMLInputElement | null>(null);
+  const surnameInputRef = useRef<HTMLInputElement | null>(null);
+  const [inputs] = useState<Record<string, any>>({
+    name: nameInputRef,
+    surname: surnameInputRef,
+  });
 
   const onKeyPressed = (key: string) => {
-    if (inputRef && inputRef.current) {
-      const input = inputRef.current;
+    if (inputs[focusedInput] && inputs[focusedInput].current) {
+      const input = inputs[focusedInput].current;
+      console.log(input);
       const keyValue = getKeyValue(key);
 
       if (keyValue === "{bksp}") {
         const value = input.value;
         const newValue =
           value.substr(0, caret - 1) + value.substr(caret, value.length);
-        inputRef.current.value = newValue;
+        inputs[focusedInput].current.value = newValue;
         setCaret(caret - 1 < 0 ? 0 : caret - 1);
       } else {
         const value = input.value;
         const newValue =
           value.substr(0, caret) + keyValue + value.substr(caret, value.length);
-        inputRef.current.value = newValue;
+        inputs[focusedInput].current.value = newValue;
         setCaret(caret + 1);
       }
     }
@@ -40,18 +46,19 @@ function App() {
 
   useEffect(() => {
     console.log("caret", caret);
-    if (inputRef && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.selectionStart = caret;
-      inputRef.current.selectionEnd = caret;
+    if (inputs[focusedInput] && inputs[focusedInput].current) {
+      inputs[focusedInput].current.focus();
+      inputs[focusedInput].current.selectionStart = caret;
+      inputs[focusedInput].current.selectionEnd = caret;
     }
-  }, [caret]);
+  }, [caret, focusedInput, inputs]);
 
   const handleOnFocus = (event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
     console.log("Focused on " + target.id);
     setTimeout(() => {
       console.log("Caret", target.selectionStart, target.selectionEnd);
+      setFocusedInput(target.id);
       setCaret(target.selectionStart || 0);
     }, 0);
   };
@@ -62,8 +69,20 @@ function App() {
       <input
         id="name"
         type="text"
-        defaultValue={inputRef.current?.value || ""}
-        ref={inputRef}
+        placeholder="Name"
+        defaultValue={nameInputRef.current?.value || ""}
+        ref={nameInputRef}
+        onClick={handleOnFocus}
+      />
+
+      <br />
+
+      <input
+        id="surname"
+        type="text"
+        placeholder="Surname"
+        defaultValue={surnameInputRef.current?.value || ""}
+        ref={surnameInputRef}
         onClick={handleOnFocus}
       />
       <Keyboard layout={layout} onKeyPressed={onKeyPressed} />
