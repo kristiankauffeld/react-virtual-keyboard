@@ -1,0 +1,25 @@
+.keyboard {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+.keyboard__keys {
+  display: flex;
+  flex-direction: column;
+}
+
+.keyboard__row {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.keyboard__key {
+  flex-grow: 1;
+  font-size: 1.2rem;
+  padding: 1rem;
+  border: none;
+}
