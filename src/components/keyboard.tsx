@@ -9,6 +9,7 @@ const KeyboardLayout: Record<string, string[]> = {
     "{shift} z x c v b n m , . / {shift}",
     ".com @ {space}",
   ],
+  phone: ["1 2 3", "4 5 6", "7 8 9", "{bksp} 0 {enter}"],
 };
 
 type KeyboardProps = {
